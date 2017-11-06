@@ -16,8 +16,8 @@ To build:
 Run these commands:
 ```
 cd ~
-git clone https://github.com/Vetro7/UltraNoteCLI UltraNoteCLI
-cd UltraNoteCLI
+git clone https://github.com/UltraNote/UltraNote.git UltraNote
+cd UltraNote
 mkdir build
 cd build
 cmake ..
@@ -25,7 +25,7 @@ cd ..
 make
 ```
 
-The resulting executables can be found in `UltraNoteCLI/build/release/src`.
+The resulting executables can be found in `UltraNote/build/release/src`.
 
 #### Advanced options:
 
