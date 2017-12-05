@@ -16,6 +16,7 @@ To build:
 Run these commands:
 ```
 cd ~
+sudo apt-get install build-essential git cmake libboost-all-dev
 git clone https://github.com/UltraNote/UltraNote.git UltraNote
 cd UltraNote
 mkdir build
