@@ -8,13 +8,13 @@ Natural way to use it in your application is JSON RPC. Popular programming lagua
 
 #### 1. Add `walletd` to any bin directory or set `PATH` variable. And check if it is working:
 ```sh
-	~$ walletd --help
+~$ walletd --help
 ```
 
 
 #### 2. The daemon has plenty of programm options, but the best way is to use a configuration file.
 ```
-	~$ walletd --config=/etc/paymentgate.conf
+~$ walletd --config=/etc/paymentgate.conf
 ```
 
 ##### Available configuration options:
@@ -23,14 +23,14 @@ container-file=				# REQUIRED. Path to wallet container
 container-password= 		# REQUIRED. Password
 data-dir=/srv/ultranote		# Where blockchain data is stored. Defaults to /home/user/.UltraNote
 bind-address=0.0.0.0		# Use server IP or 127.0.0.1
-bind-port=8070              # Port
+bind-port=8070				# Port
 rpc-user=                   # Auth user for RPC service
 rpc-password=               # Password for RPC service
 server-root=/srv/ultranote  # Working directory
-log-level=		            # Log level 0-4
-local=1						# Use In-process node
+log-level=                  # Log level 0-4
+local=1                     # Use In-process node
 daemon-address=localhost    # remote daemon address, don't use it with in-process mode
-daemon-port=30000			# 
+daemon-port=30000           # 
 ```
 
 ##### Minimal Configuration
@@ -47,17 +47,19 @@ local=1
 
 #### 3. Generate wallet container:
 ```sh
-	~$ walletd --config=/etc/paymentgate.conf --generate-container
+~$ walletd --config=/etc/paymentgate.conf --generate-container
 ```
 
 
 #### 4. Running the daemon:
 ```
-	~$ walletd --config=/etc/paymentgate.conf
+~$ walletd --config=/etc/paymentgate.conf
 ```
 *To keep it warm use your favorite process manager like `systemd` or `supervisor`.
 *Configure firewall rules if you run it in a container or virtual environment
 *Do use a https proxy if you run it outside host environment  
+
+
 
 
 
@@ -67,8 +69,11 @@ local=1
 URL: `http://localhost:8070/json_rpc`
 
 
-#### `getStatus`
-Get `walletd` status. 
+
+
+
+
+#### * `getStatus()`
 
 Request:
 ```json
@@ -101,7 +106,8 @@ _Check if the daemon is syncronized:_
 
 
 
-#### `createAddress`
+
+#### * `createAddress()`
 Create a new wallet
 
 Request:
@@ -148,7 +154,9 @@ Response:
 }
 ```
 
-#### `getBalance`
+
+
+#### * `getBalance()`
 
 Request:
 ```json
@@ -174,7 +182,9 @@ Response:
 }
 ```
 
-#### `getUnconfirmedTransactionHashes`
+
+
+#### * `getUnconfirmedTransactionHashes()`
 
 Request:
 ```json
@@ -206,7 +216,9 @@ Use Case:
 _Check if there are new transactions in the pool_
 
 
-#### `getTransactions`
+
+
+#### * `getTransactions()`
 
 Request:
 ```json
@@ -238,9 +250,60 @@ _Get transactions from blockchain after the service was down_
 
 
 
-#### `getTransaction`
 
+
+#### * `getTransaction()`
+
+Request:
 ```json
+{
+	"method":"getTransaction",
+	"params": {
+		"transactionHash":"9fb36d4bb905ef360c877ce8eba9c9dafc81da27cae85bd4727af46c5ba75ef7"
+	},
+	"jsonrpc": "2.0", 
+	"id": "1"
+}
+```
+
+Response:
+```json
+{
+	"id":"1",
+	"jsonrpc":"2.0",
+	"result":{
+		"transaction":{
+			"amount":-1000,
+			"blockIndex":4294967295,
+			"extra":"015371f8a3cdae5b7ec5fd8e79e3f1d524f8f4d9d884d6c74b81d63e4076b04b1201",
+			"fee":0,
+			"isBase":false,
+			"paymentId":"",
+			"state":2,
+			"timestamp":0,
+			"transactionHash":"9fb36d4bb905ef360c877ce8eba9c9dafc81da27cae85bd4727af46c5ba75ef7",
+			"transfers":[
+				{
+					"address":"Xun3qFybMCTcqzexD68QMjDoHUDUqUCWEJ82svTJ5vtbYF652s7o3njYe2AvyWtSL2iiiELby9mGH6dkQZryga4P4fVVUmGVMk",
+					"amount":1000,
+					"type":0
+				},
+				{
+					"address":"Xun3ZtBPE7eYvz1Uokg9zg9m8UJsYdWFyEFT6Mmk4snXgMeaSfAQRGKhHPSR7X6nPG5DVpjrpNJ2Jg7Ej4DV3xgL5PEsCMBnGV",
+					"amount":899000,
+					"type":2
+				},
+				{
+					"address":"Xun3ZtBPE7eYvz1Uokg9zg9m8UJsYdWFyEFT6Mmk4snXgMeaSfAQRGKhHPSR7X6nPG5DVpjrpNJ2Jg7Ej4DV3xgL5PEsCMBnGV",
+					"amount":-900000,
+					"type":0
+				}
+			],
+		"unlockTime":0
+		}
+	}
+}
+
 ```
 
 
