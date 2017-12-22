@@ -765,7 +765,8 @@ void WalletGreen::validateTransactionParameters(const TransactionParameters& tra
     throw std::system_error(make_error_code(error::ZERO_DESTINATION));
   }
 
-  if (transactionParameters.fee < m_currency.minimumFee()) {
+  if (transactionParameters.ttl == 0 && 
+    transactionParameters.fee < m_currency.minimumFee()) {
     throw std::system_error(make_error_code(error::FEE_TOO_SMALL));
   }
 

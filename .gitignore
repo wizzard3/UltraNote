@@ -2,6 +2,7 @@
 /build
 /tags
 .idea
+.codelite
 .ycm_extra_conf.py
 .ycm_extra_conf.pyc
 Release
@@ -11,3 +12,5 @@ CMakeFiles
 /version
 miniupnpcstrings.h
 compile_commands.json
+*.workspace
+*.project
