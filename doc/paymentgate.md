@@ -73,7 +73,7 @@ URL: `http://localhost:8070/json_rpc`
 
 
 
-#### * `getStatus()`
+#### Method: `getStatus()`
 
 Request:
 ```json
@@ -107,7 +107,7 @@ _Check if the daemon is syncronized:_
 
 
 
-#### * `createAddress()`
+#### Method: `createAddress()`
 Create a new wallet
 
 Request:
@@ -131,7 +131,9 @@ Response:
 }
 ```
 
-#### `deleteAddress`
+
+
+#### Method: `deleteAddress`
 
 Request:
 ```json
@@ -156,7 +158,7 @@ Response:
 
 
 
-#### * `getBalance()`
+#### Method: `getBalance()`
 
 Request:
 ```json
@@ -184,7 +186,7 @@ Response:
 
 
 
-#### * `getUnconfirmedTransactionHashes()`
+#### Method: `getUnconfirmedTransactionHashes()`
 
 Request:
 ```json
@@ -218,7 +220,7 @@ _Check if there are new transactions in the pool_
 
 
 
-#### * `getTransactions()`
+#### Method: `getTransactions()`
 
 Request:
 ```json
@@ -252,7 +254,7 @@ _Get transactions from blockchain after the service was down_
 
 
 
-#### * `getTransaction()`
+#### Method: `getTransaction()`
 
 Request:
 ```json
