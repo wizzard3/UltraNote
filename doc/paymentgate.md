@@ -19,11 +19,11 @@ Natural way to use it in your application is JSON RPC. Popular programming lagua
 
 ##### Available configuration options:
 ```ini
-container-file=				# REQUIRED. Path to wallet container
-container-password= 		# REQUIRED. Password
-data-dir=/srv/ultranote		# Where blockchain data is stored. Defaults to /home/user/.UltraNote
-bind-address=0.0.0.0		# Use server IP or 127.0.0.1
-bind-port=8070				# Port
+container-file=	            # REQUIRED. Path to wallet container
+container-password= 	    # REQUIRED. Password
+data-dir=/srv/ultranote	    # Where blockchain data is stored. Defaults to /home/user/.UltraNote
+bind-address=0.0.0.0	    # Use server IP or 127.0.0.1
+bind-port=8070		    # Port
 rpc-user=                   # Auth user for RPC service
 rpc-password=               # Password for RPC service
 server-root=/srv/ultranote  # Working directory
@@ -56,20 +56,19 @@ local=1
 ~$ walletd --config=/etc/paymentgate.conf
 ```
 *To keep it warm use your favorite process manager like `systemd` or `supervisor`.
+
 *Configure firewall rules if you run it in a container or virtual environment
+
 *Do use a https proxy if you run it outside host environment  
 
 
-
+-------------------------------------------------------------------------------------------
 
 
 
 ### JSON RPC Methods
 
 URL: `http://localhost:8070/json_rpc`
-
-
-
 
 
 
@@ -100,11 +99,14 @@ Response:
 ```
 
 Use Case:
+
 _Check if the daemon is syncronized:_
+
 `peerCount` > 0
+
 `knownBlockCount` == `blockCount`
 
-
+-------------------------------------------------------------------------------------------
 
 
 #### Method: `createAddress()`
@@ -131,9 +133,9 @@ Response:
 }
 ```
 
+-------------------------------------------------------------------------------------------
 
-
-#### Method: `deleteAddress`
+#### Method: `deleteAddress()`
 
 Request:
 ```json
@@ -156,7 +158,7 @@ Response:
 }
 ```
 
-
+-------------------------------------------------------------------------------------------
 
 #### Method: `getBalance()`
 
@@ -184,7 +186,7 @@ Response:
 }
 ```
 
-
+-------------------------------------------------------------------------------------------
 
 #### Method: `getUnconfirmedTransactionHashes()`
 
@@ -215,9 +217,11 @@ Response:
 ```
 
 Use Case:
+
 _Check if there are new transactions in the pool_
 
 
+-------------------------------------------------------------------------------------------
 
 
 #### Method: `getTransactions()`
@@ -248,10 +252,11 @@ Response:
 ```
 
 Use Case:
+
 _Get transactions from blockchain after the service was down_
 
 
-
+-------------------------------------------------------------------------------------------
 
 
 #### Method: `getTransaction()`
@@ -309,6 +314,7 @@ Response:
 ```
 
 
+-------------------------------------------------------------------------------------------
 
 #### `reset`
 Re-sync cointainer starting from 0 block.
