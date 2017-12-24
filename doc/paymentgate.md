@@ -337,7 +337,7 @@ Request:
 		"addresses":["Xun3ZtBPE7eYvz1Uokg9zg9m8UJsYdWFyEFT6Mmk4snXgMeaSfAQRGKhHPSR7X6nPG5DVpjrpNJ2Jg7Ej4DV3xgL5PEsCMBnGV"],
 		"anonymity": 2,
 		"fee": 10000,
-		"transfers"[
+		"transfers":[
 			{
 				"amount":900000,
 				"address":"Xun3qFybMCTcqzexD68QMjDoHUDUqUCWEJ82svTJ5vtbYF652s7o3njYe2AvyWtSL2iiiELby9mGH6dkQZryga4P4fVVUmGVMk"
@@ -379,7 +379,7 @@ Request:
 		"ttl": 1513975016,
 		"extra": "01fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff04fffffffffff",
 		"text" : "encrypted string",
-		"transfers"[
+		"transfers":[
 			{
 				"amount":1000,
 				"address":"Xun3qFybMCTcqzexD68QMjDoHUDUqUCWEJ82svTJ5vtbYF652s7o3njYe2AvyWtSL2iiiELby9mGH6dkQZryga4P4fVVUmGVMk"
@@ -389,7 +389,7 @@ Request:
 	"jsonrpc": "2.0", 
 	"id": "1"
 }
-
+```
 
 
 ------------------------------------------------------------------------------------------------------
