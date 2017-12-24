@@ -1,7 +1,8 @@
-## Payment Gate JSON RPC
+## Paymentgate JSON RPC
 
 Paymentgate daemon `walletd` provides multi-user wallets for services like exchages or online wallets.
 Natural way to use it in your application is JSON RPC. Popular programming laguages provide libraries for making RPC calls seamlessly, but in this document we are going to show only raw JSON RPC requests using a barebones HTTP client. 
+
 
 
 ### Running the daemon
@@ -62,6 +63,7 @@ local=1
 *Do use a https proxy if you run it outside host environment  
 
 
+
 -------------------------------------------------------------------------------------------
 
 
@@ -106,6 +108,7 @@ _Check if the daemon is syncronized:_
 
 `knownBlockCount` == `blockCount`
 
+
 -------------------------------------------------------------------------------------------
 
 
@@ -135,6 +138,7 @@ Response:
 
 -------------------------------------------------------------------------------------------
 
+
 #### Method: `deleteAddress()`
 
 Request:
@@ -160,7 +164,8 @@ Response:
 
 -------------------------------------------------------------------------------------------
 
-#### Method: `getBalance()`
+
+#### Method: `getBalance( address:String )`
 
 Request:
 ```json
@@ -188,7 +193,8 @@ Response:
 
 -------------------------------------------------------------------------------------------
 
-#### Method: `getUnconfirmedTransactionHashes()`
+
+#### Method: `getUnconfirmedTransactionHashes( address:String )`
 
 Request:
 ```json
@@ -209,8 +215,8 @@ Response:
 	"jsonrpc":"2.0",
 	"result":{
 		"transactionHashes":[
-			'7031309d4a0d87241c3700cafaeeefc04b226dc3387cedef4e93226aa76f21cb',
-			'7031309d4a0d87241c3700cafaeeefc04b226dc3387cedef4e93226aa76f21cb' 
+			"7031309d4a0d87241c3700cafaeeefc04b226dc3387cedef4e93226aa76f21cb",
+			"7031309d4a0d87241c3700cafaeeefc04b226dc3387cedef4e93226aa76f21cb" 
 		]
 	}
 }
@@ -224,7 +230,7 @@ _Check if there are new transactions in the pool_
 -------------------------------------------------------------------------------------------
 
 
-#### Method: `getTransactions()`
+#### Method: `getTransactions( firstBlockIndex:Int, blockCount:Int )`
 
 Request:
 ```json
@@ -243,9 +249,8 @@ Response:
 	"jsonrpc":"2.0",
 	"result":{
 		"items":[
-			{"blockHash":"ca9179c4e02017adcd538efb3874b1857b4121814c7d15ec15f8fc0a93481466","transactions":[{..}]},
-			{"blockHash":"ca9179c4e02017adcd538efb3874b1857b4121814c7d15ec15f8fc0a93481466","transactions":[{..}]}
-			...
+			{"blockHash":"ca9179c4e02017adcd538efb3874b1857b4121814c7d15ec15f8fc0a93481466","transactions":[{}]},
+			{"blockHash":"ca9179c4e02017adcd538efb3874b1857b4121814c7d15ec15f8fc0a93481466","transactions":[{}]}
 		]
 	}
 }
@@ -259,7 +264,7 @@ _Get transactions from blockchain after the service was down_
 -------------------------------------------------------------------------------------------
 
 
-#### Method: `getTransaction()`
+#### Method: `getTransaction( transactionHash:String )`
 
 Request:
 ```json
@@ -316,7 +321,97 @@ Response:
 
 -------------------------------------------------------------------------------------------
 
-#### `reset`
+
+#### Method:  ```sendTransaction( 
+	addresses:Array of Strings,
+	anonymity:Int, 
+	[paymentId:String],
+	[fee:Int], 
+	[ttl:Int], 
+	[extra:String], 
+	[text:String], 
+	transfers:Array of Objects(amount:Int, address:String) )
+```
+
+##### 1. Example: sending funds
+In order to send money you need to specify `addresses` which should be charged, `fee`, `anonimity`, and `transfers`.
+
+* Be careful, If you didn't specify addresses the daemon can charge all wallets to collets needed amount.
+
+Request:
+```json
+{
+	"method":"sendTransaction",
+	"params": {
+		"addresses":["Xun3ZtBPE7eYvz1Uokg9zg9m8UJsYdWFyEFT6Mmk4snXgMeaSfAQRGKhHPSR7X6nPG5DVpjrpNJ2Jg7Ej4DV3xgL5PEsCMBnGV"],
+		"anonymity": 2,
+		"fee": 10000,
+		"transfers"[
+			{
+				"amount":900000,
+				"address":"Xun3qFybMCTcqzexD68QMjDoHUDUqUCWEJ82svTJ5vtbYF652s7o3njYe2AvyWtSL2iiiELby9mGH6dkQZryga4P4fVVUmGVMk"
+			}
+		]
+	},
+	"jsonrpc": "2.0", 
+	"id": "1"
+}
+```
+
+
+##### 2. Sending data
+
+UltraNote paymentgate daemon allows to send arbitraty data within a transaction. It can be any text string.
+Best application for this is sending messages. *It is not encrypted* unless you use encryption on the client side.
+We added this possibility to support message exchange for online services using E2E clientside encryption. 
+*Recommended maximum message size is 50kb*
+
+In order to send transaction with data you have to set `fee` to `0` and specify `ttl` in seconds (after 1970).
+Now, because we need to keep compatibility with desktop messaging we have to add `extra` field with a placeholder string:
+
+_extra: "01fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff04fffffffffff" _
+
+And finally we have to specify text with arbitrary data. Be aware that you should encrypt it yourself since it is not wallet encrypted messaging:
+
+_text: "encrypted string"_
+
+Also. Since the data is sent in transaction you should send a small amount to recipient.
+
+Request:
+```json
+{
+	"method":"sendTransaction",
+	"params": {
+		"addresses":["Xun3ZtBPE7eYvz1Uokg9zg9m8UJsYdWFyEFT6Mmk4snXgMeaSfAQRGKhHPSR7X6nPG5DVpjrpNJ2Jg7Ej4DV3xgL5PEsCMBnGV"],
+		"anonymity": 0,
+		"fee": 0,
+		"ttl": 1513975016,
+		"extra": "01fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff04fffffffffff",
+		"text" : "encrypted string",
+		"transfers"[
+			{
+				"amount":1000,
+				"address":"Xun3qFybMCTcqzexD68QMjDoHUDUqUCWEJ82svTJ5vtbYF652s7o3njYe2AvyWtSL2iiiELby9mGH6dkQZryga4P4fVVUmGVMk"
+			}
+		]
+	},
+	"jsonrpc": "2.0", 
+	"id": "1"
+}
+
+
+
+------------------------------------------------------------------------------------------------------
+
+
+#### Method `reset()`
 Re-sync cointainer starting from 0 block.
+
+
+------------------------------------------------------------------------------------------------------
+
+
+#### Method `save()`
+Save current container state. Do it before making reserve copies or reboots.
 
 
