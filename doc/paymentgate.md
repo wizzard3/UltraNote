@@ -322,16 +322,7 @@ Response:
 -------------------------------------------------------------------------------------------
 
 
-#### Method:  `sendTransaction( 
-	addresses:Array of Strings,
-	anonymity:Int, 
-	[paymentId:String],
-	[fee:Int], 
-	[ttl:Int], 
-	[extra:String], 
-	[text:String], 
-	transfers:Array of Objects(amount:Int, address:String) )
-`
+#### Method:  `sendTransaction( addresses:Array of Strings, anonymity:Int, [paymentId:String], [fee:Int],  [ttl:Int], [extra:String], [text:String], transfers:Array of Objects(amount:Int, address:String) )`
 
 ##### 1. Example: sending funds
 In order to send money you need to specify `addresses` which should be charged, `fee`, `anonimity`, and `transfers`.
