@@ -76,7 +76,15 @@ Crypto::Hash parsePaymentId(const std::string& paymentIdStr) {
 
 bool getPaymentIdFromExtra(const std::string& binaryString, Crypto::Hash& paymentId) {
   return CryptoNote::getPaymentIdFromTxExtra(Common::asBinaryArray(binaryString), paymentId);
+
 }
+
+bool getMessageFromExtra(Logging::LoggerRef logger, const std::string& privkey, const std::string& txkey, const std::string& extra, std::string& message){
+    
+    return true;
+} 
+
+
 
 std::string getPaymentIdStringFromExtra(const std::string& binaryString) {
   Crypto::Hash paymentId;
@@ -142,6 +150,12 @@ void addPaymentIdToExtra(const std::string& paymentId, std::string& extra) {
     throw std::runtime_error("Couldn't add payment id to extra");
   }
 
+  std::copy(extraVector.begin(), extraVector.end(), std::back_inserter(extra));
+}
+
+void addTTLToExtra(const u_int64_t& ttl, std::string& extra) {
+  std::vector<uint8_t> extraVector;
+  CryptoNote::appendTTLToExtra(extraVector, ttl);
   std::copy(extraVector.begin(), extraVector.end(), std::back_inserter(extra));
 }
 
@@ -827,10 +841,20 @@ std::error_code WalletService::sendTransaction(const SendTransaction::Request& r
     } else {
       sendParams.extra = Common::asString(Common::fromHex(request.extra));
     }
+    
+    logger(Logging::DEBUGGING) << "TTL: " << request.ttl;
+    if (request.paymentId.empty() && request.ttl != 0){
+        addTTLToExtra(request.ttl, sendParams.extra);
+    }
+    
+    if(!request.text.empty()){
+        std::copy(request.text.begin(), request.text.end(), std::back_inserter(sendParams.extra));
+    }
 
     sendParams.sourceAddresses = request.sourceAddresses;
     sendParams.destinations = convertWalletRpcOrdersToWalletOrders(request.transfers);
     sendParams.fee = request.fee;
+    sendParams.ttl = request.ttl;
     sendParams.mixIn = request.anonymity;
     sendParams.unlockTimestamp = request.unlockTime;
     sendParams.changeDestination = request.changeAddress;
@@ -988,6 +1012,22 @@ std::error_code WalletService::getUnconfirmedTransactionHashes(const std::vector
 
   return std::error_code();
 }
+
+std::error_code WalletService::getMessage(const std::string& privkey, const std::string& txkey, const std::string& extra, std::string& message) {
+  try {
+    System::EventLock lk(readyEvent);
+    
+    logger(Logging::DEBUGGING) << "Getting Message from extra " << message;
+    getMessageFromExtra(logger, privkey, txkey, extra, message);
+  
+  } catch (std::system_error& x) {
+    logger(Logging::WARNING) << "Error getting message from extra: " << x.what();
+    return x.code();
+  }
+
+  return std::error_code();
+}
+
 
 std::error_code WalletService::getStatus(uint32_t& blockCount, uint32_t& knownBlockCount, std::string& lastBlockHash, uint32_t& peerCount) {
   try {

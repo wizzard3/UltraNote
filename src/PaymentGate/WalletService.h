@@ -70,6 +70,8 @@ public:
   std::error_code sendDelayedTransaction(const std::string& transactionHash);
   std::error_code getUnconfirmedTransactionHashes(const std::vector<std::string>& addresses, std::vector<std::string>& transactionHashes);
   std::error_code getStatus(uint32_t& blockCount, uint32_t& knownBlockCount, std::string& lastBlockHash, uint32_t& peerCount);
+  std::error_code getMessage(const std::string& privkey, const std::string& txkey, const std::string& extra, std::string& message);
+
 
 private:
   void refresh();
