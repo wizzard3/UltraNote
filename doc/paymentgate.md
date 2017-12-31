@@ -322,7 +322,7 @@ Response:
 -------------------------------------------------------------------------------------------
 
 
-#### Method:  `sendTransaction( addresses:Array of Strings, anonymity:Int, [paymentId:String], [fee:Int],  [ttl:Int], [extra:String], [text:String], transfers:Array of Objects(amount:Int, address:String) )`
+#### Method:  `sendTransaction( addresses:Array of Strings, anonymity:Int, [paymentId:String], [fee:Int],  transfers:Array of Objects(amount:Int, address:String))`
 
 ##### 1. Example: sending funds
 In order to send money you need to specify `addresses` which should be charged, `fee`, `anonimity`, and `transfers`.
@@ -349,12 +349,11 @@ Request:
 }
 ```
 
+#### Method: `sendTransaction( .., ttl:Int, extra:String, text:String )`
 
-##### 2. Sending data
-
-UltraNote paymentgate daemon allows to send arbitraty data within a transaction. It can be any text string.
+UltraNote `walletd` daemon allows to send arbitraty data within transaction extra. It can be any text string.
 Best application for this is sending messages. *It is not encrypted* unless you use encryption on the client side.
-We added this possibility to support message exchange for online services using E2E clientside encryption. 
+We added this feature to support message exchange for online services using E2E clientside encryption. 
 *Recommended maximum message size is 50kb*
 
 In order to send transaction with data you have to set `fee` to `0` and specify `ttl` in seconds (after 1970).
