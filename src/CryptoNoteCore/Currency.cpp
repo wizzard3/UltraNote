@@ -493,7 +493,7 @@ bool Currency::parseAmount(const std::string& str, uint64_t& amount) const {
   return Common::fromString(strAmount, amount);
 }
 
-difficulty_type Currency::nextDifficulty(std::vector<uint64_t> timestamps,
+difficulty_type Currency::nextDifficulty1(std::vector<uint64_t> timestamps,
   std::vector<difficulty_type> cumulativeDifficulties) const {
   assert(m_difficultyWindow >= 2);
 
@@ -510,7 +510,7 @@ difficulty_type Currency::nextDifficulty(std::vector<uint64_t> timestamps,
   }
 
   sort(timestamps.begin(), timestamps.end());
-  
+
   size_t cutBegin, cutEnd;
   assert(2 * m_difficultyCut <= m_difficultyWindow - 2);
   if (length <= m_difficultyWindow - 2 * m_difficultyCut) {
@@ -518,6 +518,53 @@ difficulty_type Currency::nextDifficulty(std::vector<uint64_t> timestamps,
     cutEnd = length;
   } else {
     cutBegin = (length - (m_difficultyWindow - 2 * m_difficultyCut) + 1) / 2;
+    cutEnd = cutBegin + (m_difficultyWindow - 2 * m_difficultyCut);
+  }
+  assert(/*cut_begin >= 0 &&*/ cutBegin + 2 <= cutEnd && cutEnd <= length);
+  uint64_t timeSpan = timestamps[cutEnd - 1] - timestamps[cutBegin];
+  if (timeSpan == 0) {
+    timeSpan = 1;
+  }
+
+  difficulty_type totalWork = cumulativeDifficulties[cutEnd - 1] - cumulativeDifficulties[cutBegin];
+  assert(totalWork > 0);
+
+  uint64_t low, high;
+  low = mul128(totalWork, m_difficultyTarget, &high);
+  if (high != 0 || low + timeSpan - 1 < low) {
+    return 0;
+  }
+
+  return (low + timeSpan - 1) / timeSpan;
+}
+
+difficulty_type Currency::nextDifficulty(std::vector<uint64_t> timestamps,
+  std::vector<difficulty_type> cumulativeDifficulties) const {
+  assert(m_difficultyWindow >= 2);
+  
+  size_t window_v1 = parameters::DIFFICULTY_WINDOW_V1;
+  
+  if (timestamps.size() > window_v1) {
+    timestamps.resize(window_v1);
+    cumulativeDifficulties.resize(window_v1);
+  }
+
+  size_t length = timestamps.size();
+  assert(length == cumulativeDifficulties.size());
+  assert(length <= window_v1);
+  if (length <= 1) {
+    return 1;
+  }
+
+  sort(timestamps.begin(), timestamps.end());
+  
+  size_t cutBegin, cutEnd;
+  assert(2 * m_difficultyCut <= window_v1 - 2);
+  if (length <= window_v1 - 2 * window_v1) {
+    cutBegin = 0;
+    cutEnd = length;
+  } else {
+    cutBegin = (length - (window_v1 - 2 * m_difficultyCut) + 1) / 2;
     cutEnd = cutBegin + (m_difficultyWindow - 2 * m_difficultyCut);
   }
   assert(/*cut_begin >= 0 &&*/ cutBegin + 2 <= cutEnd && cutEnd <= length);
