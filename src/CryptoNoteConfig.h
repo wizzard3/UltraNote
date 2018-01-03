@@ -42,9 +42,11 @@ const uint64_t DEFAULT_DUST_THRESHOLD                        = UINT64_C(100);   
 
 const uint64_t DIFFICULTY_TARGET                             = 120; // seconds
 const uint64_t EXPECTED_NUMBER_OF_BLOCKS_PER_DAY             = 24 * 60 * 60 / DIFFICULTY_TARGET;
-const size_t   DIFFICULTY_WINDOW                             = 20; // blocks
+const size_t   DIFFICULTY_WINDOW                             = 35; // blocks
 const size_t   DIFFICULTY_CUT                                = 5;  // timestamps to cut after sorting
 const size_t   DIFFICULTY_LAG                                = 1;
+
+
 static_assert(2 * DIFFICULTY_CUT <= DIFFICULTY_WINDOW - 2, "Bad DIFFICULTY_WINDOW or DIFFICULTY_CUT");
 
 const uint64_t DEPOSIT_MIN_AMOUNT                            = 1 * COIN;

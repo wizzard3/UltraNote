@@ -17,8 +17,13 @@
 #include "CryptoNoteBasic.h"
 #include "Difficulty.h"
 
+
 namespace CryptoNote {
 
+#define MAX_AVERAGE_TIMESPAN          (uint64_t) parameters::DIFFICULTY_TARGET*12   // 24 minutes
+#define MIN_AVERAGE_TIMESPAN          (uint64_t) parameters::DIFFICULTY_TARGET/12  // 10s
+
+    
 class AccountBase;
 
 class Currency {
@@ -49,7 +54,7 @@ public:
   size_t difficultyWindow() const { return m_difficultyWindow; }
   size_t difficultyLag() const { return m_difficultyLag; }
   size_t difficultyCut() const { return m_difficultyCut; }
-  size_t difficultyBlocksCount() const { return m_difficultyWindow + m_difficultyLag; }
+  size_t difficultyBlocksCount() const { return m_difficultyWindow + m_difficultyCut * 2; }
 
   uint64_t depositMinAmount() const { return m_depositMinAmount; }
   uint32_t depositMinTerm() const { return m_depositMinTerm; }
