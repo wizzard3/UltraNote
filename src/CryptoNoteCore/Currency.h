@@ -54,7 +54,12 @@ public:
   size_t difficultyWindow() const { return m_difficultyWindow; }
   size_t difficultyLag() const { return m_difficultyLag; }
   size_t difficultyCut() const { return m_difficultyCut; }
-  size_t difficultyBlocksCount1() const { return m_difficultyWindow + m_difficultyLag; }
+  size_t difficultyBlocksCount1() const { 
+      if(isTestnet()){
+        return difficultyBlocksCount();
+      }
+      return m_difficultyWindow + m_difficultyLag; 
+  }
   size_t difficultyBlocksCount() const { return parameters::DIFFICULTY_WINDOW_V1 + m_difficultyCut * 2; }
 
   uint64_t depositMinAmount() const { return m_depositMinAmount; }

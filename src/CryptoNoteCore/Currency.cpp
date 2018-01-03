@@ -496,7 +496,11 @@ bool Currency::parseAmount(const std::string& str, uint64_t& amount) const {
 difficulty_type Currency::nextDifficulty1(std::vector<uint64_t> timestamps,
   std::vector<difficulty_type> cumulativeDifficulties) const {
   assert(m_difficultyWindow >= 2);
-
+  
+  if(isTestnet()){
+    return nextDifficulty(timestamps, cumulativeDifficulties);
+  }
+  
   if (timestamps.size() > m_difficultyWindow) {
     timestamps.resize(m_difficultyWindow);
     cumulativeDifficulties.resize(m_difficultyWindow);

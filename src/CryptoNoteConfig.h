@@ -163,14 +163,13 @@ const std::initializer_list<CheckpointData> CHECKPOINTS = {
  { 33000, "4e8958bcf1673bc326d6285c5f3df256f2c48c7ff85db7ef13637421a561e70e" },
 };
 
-
-const std::map<const uint32_t, const uint8_t> VERSION = {
-    // {BlockIndex , Version}
+// {BlockIndex , Version}
+const std::map<const uint32_t, const uint8_t> Version = {
     {34147, 1}
 };
 
-const std::map<const uint32_t, const char*> VERSION_CHECK = {
-    // {BlockIndex , Hash}
+// {BlockIndex , Hash}
+const std::map<const uint32_t, const char*> VersionCheck = {
     {34147, "cdc7e1b2bb3df0d48d271b7f8429a847ca661a112ce5ed5898b429983e257082"}
 };
 
