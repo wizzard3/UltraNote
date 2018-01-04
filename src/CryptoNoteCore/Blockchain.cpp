@@ -661,7 +661,7 @@ uint8_t Blockchain::getForkVersion(){
         lastForkHeight = it.first;
         lastForkVersion = it.second;
     }
-    if(lastForkHeight <= height) {
+    if(lastForkHeight < height) {
         return lastForkVersion;
     }
     return 0;
