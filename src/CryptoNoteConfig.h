@@ -13,8 +13,10 @@
 
 #include <cstdint>
 #include <initializer_list>
+#include <map>
 
 namespace CryptoNote {
+
 namespace parameters {
 
 const uint64_t CRYPTONOTE_MAX_BLOCK_NUMBER                   = 500000000;
@@ -42,9 +44,15 @@ const uint64_t DEFAULT_DUST_THRESHOLD                        = UINT64_C(100);   
 
 const uint64_t DIFFICULTY_TARGET                             = 120; // seconds
 const uint64_t EXPECTED_NUMBER_OF_BLOCKS_PER_DAY             = 24 * 60 * 60 / DIFFICULTY_TARGET;
-const size_t   DIFFICULTY_WINDOW                             = 20; // blocks
-const size_t   DIFFICULTY_CUT                                = 5;  // timestamps to cut after sorting
-const size_t   DIFFICULTY_LAG                                = 1;
+
+const size_t   DIFFICULTY_WINDOW                             = 20;
+const size_t   DIFFICULTY_CUT                                = 5;
+
+const size_t   DIFFICULTY_WINDOW_V1                          = 35;
+
+const size_t   DIFFICULTY_LAG                                = 1; //not used in v1
+
+
 static_assert(2 * DIFFICULTY_CUT <= DIFFICULTY_WINDOW - 2, "Bad DIFFICULTY_WINDOW or DIFFICULTY_CUT");
 
 const uint64_t DEPOSIT_MIN_AMOUNT                            = 1 * COIN;
@@ -141,6 +149,7 @@ struct CheckpointData {
   const char* blockId;
 };
 
+
 #ifdef __GNUC__
 __attribute__((unused))
 #endif
@@ -152,6 +161,16 @@ const std::initializer_list<CheckpointData> CHECKPOINTS = {
  { 9900, "15f3ecbb6324991c653ceed03619a735b40142d1b4777161593510f0f1d1a098" },
  { 22000, "8d444f19cc5cd46738583a001135a72b5824aa380e5006f422108eb50d9b9cca" },
  { 33000, "4e8958bcf1673bc326d6285c5f3df256f2c48c7ff85db7ef13637421a561e70e" },
+};
+
+// {BlockIndex , Version}
+const std::map<const uint32_t, const uint8_t> Version = {
+    {34147, 1}
+};
+
+// {BlockIndex , Hash}
+const std::map<const uint32_t, const char*> VersionCheck = {
+    {34147, "cdc7e1b2bb3df0d48d271b7f8429a847ca661a112ce5ed5898b429983e257082"}
 };
 
 } // CryptoNote
