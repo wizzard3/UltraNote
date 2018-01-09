@@ -40,6 +40,7 @@ namespace CryptoNote {
 
      bool on_idle() override;
      virtual bool handle_incoming_tx(const BinaryArray& tx_blob, tx_verification_context& tvc, bool keeped_by_block) override; //Deprecated. Should be removed with CryptoNoteProtocolHandler.
+     bool validate_miners_timestamp(const BinaryArray& block_blob, block_verification_context& bvc);
      bool handle_incoming_block_blob(const BinaryArray& block_blob, block_verification_context& bvc, bool control_miner, bool relay_block) override;
      virtual i_cryptonote_protocol* get_protocol() override {return m_pprotocol;}
      virtual const Currency& currency() const override { return m_currency; }
