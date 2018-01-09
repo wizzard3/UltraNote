@@ -500,18 +500,18 @@ bool core::handle_incoming_block_blob(const BinaryArray& block_blob, block_verif
     return false;
   }
   
-  Block bl_;
-  int32_t diffr = 60;
-  if(m_blockchain.getBlockByHash(m_blockchain.getTailId(), bl_)){
-    diffr = b.timestamp - bl_.timestamp;
-    //logger(INFO) << "Diff: " << diffr;
-  }
-  
-  if(diffr < 55){
-    logger(INFO) << "Failed to parse and validate new block";
-    bvc.m_verifivation_failed = true;
-    return false;
-  }
+  //Block bl_;
+  //int32_t diffr = 60;
+  //if(m_blockchain.getBlockByHash(m_blockchain.getTailId(), bl_)){
+  //  diffr = b.timestamp - bl_.timestamp;
+  //  //logger(INFO) << "Diff: " << diffr;
+  //}
+  //
+  //if(diffr < 55){
+  //  logger(INFO) << "Failed to parse and validate new block";
+  //  bvc.m_verifivation_failed = true;
+  //  return false;
+  //}
   
 
   return handle_incoming_block(b, bvc, control_miner, relay_block);
