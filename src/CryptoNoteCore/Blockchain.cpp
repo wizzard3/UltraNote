@@ -835,7 +835,7 @@ difficulty_type Blockchain::get_next_difficulty_for_alternative_chain(const std:
   std::vector<uint64_t> timestamps;
   std::vector<difficulty_type> commulative_difficulties;
   uint8_t version = getForkVersion();
-  uint64_t difficiltyBlocksCount;
+  size_t difficiltyBlocksCount;
   if(version == 0){
     difficiltyBlocksCount = static_cast<uint64_t>(m_currency.difficultyBlocksCount1());
   }
