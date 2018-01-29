@@ -500,7 +500,7 @@ bool core::validate_miners_timestamp(const BinaryArray& block_blob, block_verifi
        diffr = b.timestamp - bl_.timestamp;
     }
       
-    if(diffr < 55){
+    if(diffr < 15){
         logger(INFO) << "Failed to parse and validate new block";
         bvc.m_verifivation_failed = true;
         return false;
