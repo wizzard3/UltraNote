@@ -494,17 +494,19 @@ bool core::validate_miners_timestamp(const BinaryArray& block_blob, block_verifi
         return false;
     }
     
-    Block bl_;
-    int32_t diffr = 60;
-    if(m_blockchain.getBlockByHash(m_blockchain.getTailId(), bl_)){
-       diffr = b.timestamp - bl_.timestamp;
-    }
-      
-    if(diffr < 15){
-        logger(INFO) << "Failed to parse and validate new block";
-        bvc.m_verifivation_failed = true;
-        return false;
-    }
+    // @nesterow: remove implicit timestamp verification
+    
+    //Block bl_;
+    //int32_t diffr = 60;
+    //if(m_blockchain.getBlockByHash(m_blockchain.getTailId(), bl_)){
+    //   diffr = b.timestamp - bl_.timestamp;
+    //}
+    //  
+    //if(diffr < 15){
+    //    logger(INFO) << "Failed to parse and validate new block";
+    //    bvc.m_verifivation_failed = true;
+    //    return false;
+    //}
     
     return true;
 }

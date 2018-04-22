@@ -855,9 +855,11 @@ bool RpcServer::on_submitblock(const COMMAND_RPC_SUBMITBLOCK::request& req, COMM
 
   block_verification_context bvc = boost::value_initialized<block_verification_context>();
   
-  if(!m_core.validate_miners_timestamp(blockblob, bvc)){
-    throw JsonRpc::JsonRpcError{ CORE_RPC_ERROR_CODE_BLOCK_NOT_ACCEPTED, "Block not accepted" };
-  }
+  // @nesterow: remove implicit timestamp verification
+  
+  //if(!m_core.validate_miners_timestamp(blockblob, bvc)){
+  //  throw JsonRpc::JsonRpcError{ CORE_RPC_ERROR_CODE_BLOCK_NOT_ACCEPTED, "Block not accepted" };
+  //}
   
   m_core.handle_incoming_block_blob(blockblob, bvc, true, true);
 
