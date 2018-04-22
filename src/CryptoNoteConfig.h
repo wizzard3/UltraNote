@@ -25,6 +25,7 @@ const size_t   CRYPTONOTE_MAX_TX_SIZE                        = 1000000000;
 const uint64_t CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX       = 0x1a2638; // addresses start with "Xun3"
 const size_t   CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW          = 10;
 const uint64_t CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT            = 60 * 60 * 2;
+const uint64_t CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT_V2         = 6 * 60 * 2;
 const uint64_t CRYPTONOTE_DEFAULT_TX_SPENDABLE_AGE           = 10;
 
 const size_t   BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW             = 30;
@@ -176,7 +177,7 @@ const std::map<const uint32_t, const uint8_t> Version = {
 // {BlockIndex , Version}
 const std::map<const uint32_t, const uint8_t> TestNetVersion = {
     {120, 1},
-    {350, 2},
+    {250, 2},
 };
 
 // {BlockIndex , Hash}

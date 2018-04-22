@@ -1659,7 +1659,11 @@ bool Blockchain::check_tx_outputs(const Transaction& tx) const {
 }
 
 bool Blockchain::check_block_timestamp_main(const Block& b) {
-  if (b.timestamp > get_adjusted_time() + m_currency.blockFutureTimeLimit()) {
+  uint64_t ftl = m_currency.blockFutureTimeLimit();
+  if(getForkVersion() == 2)
+    ftl = m_currency.blockFutureTimeLimit_v2();
+  
+  if (b.timestamp > get_adjusted_time() + ftl) {
     logger(INFO, BRIGHT_WHITE) <<
       "Timestamp of block with id: " << get_block_hash(b) << ", " << b.timestamp << ", bigger than adjusted time + 2 hours";
     return false;
@@ -2305,8 +2309,12 @@ bool Blockchain::getLowerBound(uint64_t timestamp, uint64_t startOffset, uint32_
   std::lock_guard<decltype(m_blockchain_lock)> lk(m_blockchain_lock);
 
   assert(startOffset < m_blocks.size());
-
-  auto bound = std::lower_bound(m_blocks.begin() + startOffset, m_blocks.end(), timestamp - m_currency.blockFutureTimeLimit(),
+  
+  uint64_t ftl = m_currency.blockFutureTimeLimit();
+  if(getForkVersion() == 2)
+    ftl = m_currency.blockFutureTimeLimit_v2();
+  
+  auto bound = std::lower_bound(m_blocks.begin() + startOffset, m_blocks.end(), timestamp - ftl,
     [](const BlockEntry& b, uint64_t timestamp) { return b.bl.timestamp < timestamp; });
 
   if (bound == m_blocks.end()) {
