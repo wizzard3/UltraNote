@@ -661,15 +661,18 @@ uint8_t Blockchain::getForkVersion(){
     else
       versionMap = Version;
     
+    uint8_t lastForkVersion = 0;
     for(auto const& it : versionMap) {
         //lastForkHeight = it.first;
         //lastForkVersion = it.second;
-        if(it.first < height) {
-          return it.second;
+        
+        if(height > it.first) {
+          lastForkVersion = it.second;
         }
+        
     }
     
-    return 0;
+    return lastForkVersion;
 }
 
 difficulty_type Blockchain::getDifficultyForNextBlock() {
