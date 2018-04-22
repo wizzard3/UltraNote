@@ -7,6 +7,7 @@
 
 #include "Currency.h"
 #include <cctype>
+#include <boost/math/special_functions/round.hpp>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/lexical_cast.hpp>
 #include "../Common/Base58.h"
@@ -493,6 +494,8 @@ bool Currency::parseAmount(const std::string& str, uint64_t& amount) const {
   return Common::fromString(strAmount, amount);
 }
 
+
+// @nesterow: old difficulty alhorithm, i.e. 1st
 difficulty_type Currency::nextDifficulty1(std::vector<uint64_t> timestamps,
   std::vector<difficulty_type> cumulativeDifficulties) const {
   assert(m_difficultyWindow >= 2);
@@ -542,7 +545,8 @@ difficulty_type Currency::nextDifficulty1(std::vector<uint64_t> timestamps,
   return (low + timeSpan - 1) / timeSpan;
 }
 
-difficulty_type Currency::nextDifficulty(std::vector<uint64_t> timestamps,
+// @nesterow: 2nd diff algo, Sumokoin impl
+difficulty_type Currency::nextDifficulty2(std::vector<uint64_t> timestamps,
   std::vector<difficulty_type> cumulativeDifficulties) const {
   assert(m_difficultyWindow >= 2);
   
@@ -623,6 +627,64 @@ difficulty_type Currency::nextDifficulty(std::vector<uint64_t> timestamps,
   if (nextDiff < 1) nextDiff = 1;
   return nextDiff;
 }
+
+//@nesterow: latest diff algo, zawy's LWMA, @wownero impl
+//@wownero: https://github.com/wownero/wownero/pull/1/commits/efe03eb0379d87d521f6fc86cef39ec06c119f41
+difficulty_type Currency::nextDifficulty(std::vector<uint64_t> timestamps,
+  std::vector<difficulty_type> cumulativeDifficulties) const {
+  
+  const int64_t T = static_cast<int64_t>(m_difficultyTarget);
+  size_t N = parameters::DIFFICULTY_WINDOW_V2;
+  
+  // Return a difficulty of 1 for first 3 blocks if it's the start of the chain.
+  if (timestamps.size() < 4) { 
+      return 1;
+  }
+  // Otherwise, use a smaller N if the start of the chain is less than N+1.
+  else if ( timestamps.size() < N+1 ) { 
+    N = timestamps.size() - 1;
+  }
+  // Otherwise make sure timestamps and cumulative_difficulties are correct size.
+  else {
+    timestamps.resize(N+1);
+    cumulativeDifficulties.resize(N+1);
+  }
+  
+  // adjust=0.999 for 80 < N < 120(?)
+  const double adjust = 0.998;
+  
+  // The divisor k normalizes the LWMA sum to a standard LWMA.
+  const double k = N * (N + 1) / 2;
+  
+  double LWMA(0), sum_inverse_D(0), harmonic_mean_D(0), nextDiff(0);
+  int64_t solveTime(0);
+  uint64_t difficulty(0), next_difficulty(0);
+  
+  
+  // Loop through N most recent blocks. N is most recently solved block.
+  for (size_t i = 1; i <= N; i++) {
+      solveTime = static_cast<int64_t>(timestamps[i]) - static_cast<int64_t>(timestamps[i - 1]);
+      solveTime = std::min<int64_t>((T * 7), std::max<int64_t>(solveTime, (-7 * T)));
+      difficulty = cumulativeDifficulties[i] - cumulativeDifficulties[i - 1];
+      LWMA += solveTime * i / k;
+      sum_inverse_D += 1 / static_cast<double>(difficulty);
+  }
+  
+  harmonic_mean_D = N / sum_inverse_D;
+  
+  // Keep LWMA sane in case something unforeseen occurs.
+  if (static_cast<int64_t>(boost::math::round(LWMA)) < T / 20)
+    LWMA = static_cast<double>(T / 20);
+  
+  // No limits should be employed, but this is correct way to employ a 20% symmetrical limit:
+  // nextDifficulty=max(previous_Difficulty*0.8,min(previous_Difficulty/0.8, next_Difficulty));
+  nextDiff = harmonic_mean_D * T / LWMA * adjust;
+  next_difficulty = static_cast<uint64_t>(nextDiff);
+  return next_difficulty;
+  
+}
+
+
 
 bool Currency::checkProofOfWork(Crypto::cn_context& context, const Block& block, difficulty_type currentDiffic,
   Crypto::Hash& proofOfWork) const {

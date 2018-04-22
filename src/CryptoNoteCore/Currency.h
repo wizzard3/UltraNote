@@ -54,14 +54,17 @@ public:
   size_t difficultyWindow() const { return m_difficultyWindow; }
   size_t difficultyLag() const { return m_difficultyLag; }
   size_t difficultyCut() const { return m_difficultyCut; }
-  size_t difficultyBlocksCount1() const { 
-      if(isTestnet()){
-        return difficultyBlocksCount();
-      }
+  
+  size_t difficultyBlocksCount1() const {
       return m_difficultyWindow + m_difficultyLag; 
   }
-  size_t difficultyBlocksCount() const { return parameters::DIFFICULTY_WINDOW_V1 + m_difficultyCut * 2; }
-
+  size_t difficultyBlocksCount2() const {
+    return parameters::DIFFICULTY_WINDOW_V1 + m_difficultyCut * 2;
+  }
+  size_t difficultyBlocksCount() const {
+    return parameters::DIFFICULTY_WINDOW_V2 + 1;
+  }
+  
   uint64_t depositMinAmount() const { return m_depositMinAmount; }
   uint32_t depositMinTerm() const { return m_depositMinTerm; }
   uint32_t depositMaxTerm() const { return m_depositMaxTerm; }
@@ -131,6 +134,7 @@ public:
   bool parseAmount(const std::string& str, uint64_t& amount) const;
   
   difficulty_type nextDifficulty1(std::vector<uint64_t> timestamps, std::vector<difficulty_type> cumulativeDifficulties) const;
+  difficulty_type nextDifficulty2(std::vector<uint64_t> timestamps, std::vector<difficulty_type> cumulativeDifficulties) const;
   difficulty_type nextDifficulty(std::vector<uint64_t> timestamps, std::vector<difficulty_type> cumulativeDifficulties) const;
   bool checkProofOfWork(Crypto::cn_context& context, const Block& block, difficulty_type currentDiffic, Crypto::Hash& proofOfWork) const;
 

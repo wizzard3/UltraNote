@@ -49,6 +49,7 @@ const size_t   DIFFICULTY_WINDOW                             = 20;
 const size_t   DIFFICULTY_CUT                                = 5;
 
 const size_t   DIFFICULTY_WINDOW_V1                          = 35;
+const size_t   DIFFICULTY_WINDOW_V2                          = 40;
 
 const size_t   DIFFICULTY_LAG                                = 1; //not used in v1
 
@@ -161,11 +162,21 @@ const std::initializer_list<CheckpointData> CHECKPOINTS = {
  { 9900, "15f3ecbb6324991c653ceed03619a735b40142d1b4777161593510f0f1d1a098" },
  { 22000, "8d444f19cc5cd46738583a001135a72b5824aa380e5006f422108eb50d9b9cca" },
  { 33000, "4e8958bcf1673bc326d6285c5f3df256f2c48c7ff85db7ef13637421a561e70e" },
+ { 55000, "3da7429c64b8c0d4b2314ffe1a9df99bbda4a035196037f3f7f4f397ba3bac4c" },
+ { 88000, "7edbe42a8a4ea71d8b77cc9dde78c9e6ac15cf6ca461a2e301a8a723de251373" },
+ { 100000, "8f492fd39ce91174e65e5890560be8de5bc98b784b5067b3a20bf5a366524f6d" },
 };
 
 // {BlockIndex , Version}
 const std::map<const uint32_t, const uint8_t> Version = {
-    {34147, 1}
+    {34147, 1},
+    {115000, 2},
+};
+
+// {BlockIndex , Version}
+const std::map<const uint32_t, const uint8_t> TestNetVersion = {
+    {12, 1},
+    {35, 2},
 };
 
 // {BlockIndex , Hash}

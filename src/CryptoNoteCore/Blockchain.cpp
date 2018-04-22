@@ -654,16 +654,21 @@ bool Blockchain::getBlockHeight(const Crypto::Hash& blockId, uint32_t& blockHeig
 
 uint8_t Blockchain::getForkVersion(){
     uint32_t height = getCurrentBlockchainHeight();
+     
+    std::map<const uint32_t, const uint8_t> versionMap;
+    if(m_currency.isTestnet())
+      versionMap = TestNetVersion;
+    else
+      versionMap = Version;
     
-    uint32_t lastForkHeight;
-    uint32_t lastForkVersion;
-    for(auto const& it : Version) {
-        lastForkHeight = it.first;
-        lastForkVersion = it.second;
+    for(auto const& it : versionMap) {
+        //lastForkHeight = it.first;
+        //lastForkVersion = it.second;
+        if(it.first < height) {
+          return it.second;
+        }
     }
-    if(lastForkHeight < height) {
-        return lastForkVersion;
-    }
+    
     return 0;
 }
 
@@ -678,6 +683,9 @@ difficulty_type Blockchain::getDifficultyForNextBlock() {
     difficiltyBlocksCount = static_cast<uint64_t>(m_currency.difficultyBlocksCount1());
   }
   else if(version == 1){
+    difficiltyBlocksCount = static_cast<uint64_t>(m_currency.difficultyBlocksCount2());
+  }
+  else if(version == 2){
     difficiltyBlocksCount = static_cast<uint64_t>(m_currency.difficultyBlocksCount());
   }
   
@@ -692,8 +700,14 @@ difficulty_type Blockchain::getDifficultyForNextBlock() {
     commulative_difficulties.push_back(m_blocks[offset].cumulative_difficulty);
   }
   if(version == 0){
+    logger(DEBUGGING) << "Using legacy difficulty algo (v1)";
     return m_currency.nextDifficulty1(timestamps, commulative_difficulties);
   }
+  else if(version == 1){
+    logger(DEBUGGING) << "Using Sumokoin  difficulty algo (v2)";
+    return m_currency.nextDifficulty2(timestamps, commulative_difficulties);
+  }
+  logger(DEBUGGING) << "Using zawy's LWMA difficulty algo (latest)";
   return m_currency.nextDifficulty(timestamps, commulative_difficulties);
 }
 
@@ -883,6 +897,10 @@ difficulty_type Blockchain::get_next_difficulty_for_alternative_chain(const std:
   if(version == 0){
     return m_currency.nextDifficulty1(timestamps, commulative_difficulties);
   }
+  else if(version == 1){
+    return m_currency.nextDifficulty2(timestamps, commulative_difficulties);
+  }
+  
   return m_currency.nextDifficulty(timestamps, commulative_difficulties);
 }
 
