@@ -49,9 +49,9 @@ const size_t   DIFFICULTY_WINDOW                             = 20;
 const size_t   DIFFICULTY_CUT                                = 5;
 
 const size_t   DIFFICULTY_WINDOW_V1                          = 35;
-const size_t   DIFFICULTY_WINDOW_V2                          = 40;
+const size_t   DIFFICULTY_WINDOW_V2                          = 60;
 
-const size_t   DIFFICULTY_LAG                                = 1; //not used in v1
+const size_t   DIFFICULTY_LAG                                = 1; //not used in v1,v2
 
 
 static_assert(2 * DIFFICULTY_CUT <= DIFFICULTY_WINDOW - 2, "Bad DIFFICULTY_WINDOW or DIFFICULTY_CUT");

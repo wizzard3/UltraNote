@@ -634,7 +634,8 @@ difficulty_type Currency::nextDifficulty(std::vector<uint64_t> timestamps,
   std::vector<difficulty_type> cumulativeDifficulties) const {
   
   const int64_t T = static_cast<int64_t>(m_difficultyTarget);
-  size_t N = parameters::DIFFICULTY_WINDOW_V2;
+  
+  size_t N = difficultyBlocksCount(); //N+1
   
   // Return a difficulty of 1 for first 3 blocks if it's the start of the chain.
   if (timestamps.size() < 4) { 
@@ -650,6 +651,7 @@ difficulty_type Currency::nextDifficulty(std::vector<uint64_t> timestamps,
     cumulativeDifficulties.resize(N+1);
   }
   
+  // @nesterow: I hope it works for N=60?
   // adjust=0.999 for 80 < N < 120(?)
   const double adjust = 0.998;
   
