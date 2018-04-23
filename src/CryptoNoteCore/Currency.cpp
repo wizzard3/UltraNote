@@ -634,7 +634,7 @@ difficulty_type Currency::nextDifficulty(std::vector<uint64_t> timestamps,
   
   const int64_t T = static_cast<int64_t>(m_difficultyTarget);
   
-  size_t N = parameters::DIFFICULTY_WINDOW_V2 - 1;
+  int64_t N = static_cast<int64_t>(parameters::DIFFICULTY_WINDOW_V2) - 1;
   
   if ( timestamps.size() < 4 )
   { 
@@ -662,6 +662,7 @@ difficulty_type Currency::nextDifficulty(std::vector<uint64_t> timestamps,
   
   //(cumulativeDifficulties[N] - cumulativeDifficulties[0])*T*(N+1)*adjust/L/2;
   nextDiff = (cumulativeDifficulties[N] - cumulativeDifficulties[0])*T*(N+1)*adjust/LWMA/2;
+  
   uint64_t next_difficulty = static_cast<uint64_t>(nextDiff);
   return next_difficulty;
   
