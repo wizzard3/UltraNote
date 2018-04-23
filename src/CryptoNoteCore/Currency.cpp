@@ -653,7 +653,7 @@ difficulty_type Currency::nextDifficulty(std::vector<uint64_t> timestamps,
   const double adjust = 0.9909;
   double LWMA(0), nextDiff(0);
   
-  for (size_t i = 1; i <= N; i++) {
+  for (int64_t i = 1; i <= N; i++) {
     LWMA += std::max<int64_t>((-7 * T), std::min<int64_t>(7*T, timestamps[i] - timestamps[i-1])) * i;
   }
   
