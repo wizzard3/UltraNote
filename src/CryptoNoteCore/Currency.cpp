@@ -629,6 +629,10 @@ difficulty_type Currency::nextDifficulty2(std::vector<uint64_t> timestamps,
 }
 
 //@nesterow: latest diff algo, zawy's LWMA
+
+// LWMA difficulty algorithm
+// Copyright (c) 2017-2018 Zawy
+// https://github.com/zawy12/difficulty-algorithms/issues/3
 difficulty_type Currency::nextDifficulty(std::vector<uint64_t> timestamps,
   std::vector<difficulty_type> cumulativeDifficulties) const {
   
