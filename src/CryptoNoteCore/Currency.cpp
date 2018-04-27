@@ -633,6 +633,7 @@ difficulty_type Currency::nextDifficulty2(std::vector<uint64_t> timestamps,
 // LWMA difficulty algorithm
 // Copyright (c) 2017-2018 Zawy
 // https://github.com/zawy12/difficulty-algorithms/issues/3
+// https://github.com/zawy12/difficulty-algorithms/issues/3#issuecomment-375600752
 difficulty_type Currency::nextDifficulty(std::vector<uint64_t> timestamps,
   std::vector<difficulty_type> cumulativeDifficulties) const {
   
@@ -644,7 +645,9 @@ difficulty_type Currency::nextDifficulty(std::vector<uint64_t> timestamps,
   { 
     return 1;
   }
-  else if(timestamps.size() < N + 1)
+  else if(
+    static_cast<int64_t>(timestamps.size()) < N + 1 // -Wsign-compare
+  ) 
   {
     N = timestamps.size() - 1;
   }
@@ -654,20 +657,35 @@ difficulty_type Currency::nextDifficulty(std::vector<uint64_t> timestamps,
     cumulativeDifficulties.resize(N + 1);
   }
   
-  const double adjust = 0.9909;
-  double LWMA(0), nextDiff(0);
+  const double adjust = 0.998;
   
+  // The divisor k normalizes the LWMA sum to a standard LWMA.
+  const double k = N * (N + 1) / 2;
+  
+  double LWMA(0), sum_inverse_D(0), harmonic_mean_D(0), nextDifficulty(0);
+  int64_t solveTime(0);
+  uint64_t difficulty(0);
+  
+  // Loop through N most recent blocks. N is most recently solved block.
   for (int64_t i = 1; i <= N; i++) {
-    LWMA += std::max<int64_t>((-7 * T), std::min<int64_t>(7*T, timestamps[i] - timestamps[i-1])) * i;
+    solveTime = static_cast<int64_t>(timestamps[i]) - static_cast<int64_t>(timestamps[i - 1]);
+    solveTime = std::min<int64_t>((T * 7), std::max<int64_t>(solveTime, (-7 * T)));
+    difficulty = cumulativeDifficulties[i] - cumulativeDifficulties[i - 1];
+    LWMA += (int64_t)(solveTime * i) / k;
+    sum_inverse_D += 1 / static_cast<double>(difficulty);
   }
+  harmonic_mean_D = N / sum_inverse_D;
+  
+  // Limit LWMA same as Bitcoin's 1/4 in case something unforeseen occurs.
+  if (static_cast<int64_t>(boost::math::round(LWMA)) < T / 4)
+    LWMA = static_cast<double>(T / 4);
   
   if (static_cast<int64_t>(boost::math::round(LWMA)) < 1)
     LWMA = 1;
   
-  //(cumulativeDifficulties[N] - cumulativeDifficulties[0])*T*(N+1)*adjust/L/2;
-  nextDiff = (cumulativeDifficulties[N] - cumulativeDifficulties[0])*T*(N+1)*adjust/LWMA/2;
+  nextDifficulty = harmonic_mean_D * T / LWMA * adjust;
   
-  uint64_t next_difficulty = static_cast<uint64_t>(nextDiff);
+  uint64_t next_difficulty = static_cast<uint64_t>(nextDifficulty);
   return next_difficulty;
   
 }
