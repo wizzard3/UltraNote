@@ -674,18 +674,22 @@ difficulty_type Currency::nextDifficulty(std::vector<uint64_t> timestamps,
     LWMA += (int64_t)(solveTime * i) / k;
     sum_inverse_D += 1 / static_cast<double>(difficulty);
   }
-  harmonic_mean_D = N / sum_inverse_D;
+  
+  harmonic_mean_D = N / sum_inverse_D * adjust;
   
   // Limit LWMA same as Bitcoin's 1/4 in case something unforeseen occurs.
   if (static_cast<int64_t>(boost::math::round(LWMA)) < T / 4)
     LWMA = static_cast<double>(T / 4);
   
-  if (static_cast<int64_t>(boost::math::round(LWMA)) < 1)
-    LWMA = 1;
   
-  nextDifficulty = harmonic_mean_D * T / LWMA * adjust;
-  
+  nextDifficulty = harmonic_mean_D * T / LWMA;
   uint64_t next_difficulty = static_cast<uint64_t>(nextDifficulty);
+  
+  //@karbowanec: minimum limit
+  if (next_difficulty < 100000) {
+    next_difficulty = 100000;
+  }
+  
   return next_difficulty;
   
 }
