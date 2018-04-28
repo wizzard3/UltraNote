@@ -336,6 +336,31 @@ bool core::get_block_template(Block& b, const AccountPublicAddress& adr, difficu
 
     b.previousBlockHash = get_tail_id();
     b.timestamp = time(NULL);
+    
+    //@jagerman's patch 
+    uint64_t check_window = m_blockchain.getForkVersion() < 2 ? parameters::BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW : parameters::BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW_V2;
+    if(m_blockchain.getCurrentBlockchainHeight() >= check_window){
+      std::vector<uint64_t> timestamps;
+      uint64_t height = m_blockchain.getCurrentBlockchainHeight();
+      for(uint64_t offset = height - check_window; offset < height; ++offset)
+      {
+        timestamps.push_back(m_blockchain.getBlockTimestamp(offset));
+      }
+      
+      double median;
+      size_t ts_size = timestamps.size();
+      if (ts_size % 2 == 0){
+        median = (timestamps[ts_size / 2 - 1] + timestamps[ts_size / 2]) / 2;
+      }
+      else{
+        median = timestamps[ts_size / 2];
+      }
+      
+      uint64_t median_ts = static_cast<uint64_t>(median);
+      if (b.timestamp < median_ts) {
+        b.timestamp = median_ts;
+      }
+    }
 
     median_size = m_blockchain.getCurrentCumulativeBlocksizeLimit() / 2;
     already_generated_coins = m_blockchain.getCoinsInCirculation();

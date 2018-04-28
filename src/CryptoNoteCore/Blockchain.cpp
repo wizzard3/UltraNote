@@ -620,6 +620,11 @@ std::vector<Crypto::Hash> Blockchain::doBuildSparseChain(const Crypto::Hash& sta
   return sparseChain;
 }
 
+uint64_t Blockchain::getBlockTimestamp(uint32_t height) {
+  uint64_t ts = m_blocks[height].bl.timestamp;
+  return ts;
+} 
+
 Crypto::Hash Blockchain::getBlockIdByHeight(uint32_t height) {
   std::lock_guard<decltype(m_blockchain_lock)> lk(m_blockchain_lock);
   assert(height < m_blockIndex.size());
