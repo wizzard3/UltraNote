@@ -329,7 +329,15 @@ bool RpcServer::on_get_info(const COMMAND_RPC_GET_INFO::request& req, COMMAND_RP
   res.white_peerlist_size = m_p2p.getPeerlistManager().get_white_peers_count();
   res.grey_peerlist_size = m_p2p.getPeerlistManager().get_gray_peers_count();
   res.last_known_block_index = std::max(static_cast<uint32_t>(1), m_protocolQuery.getObservedHeight()) - 1;
-  res.full_deposit_amount = m_core.fullDepositAmount();
+  
+  
+  uint64_t height = m_core.get_current_blockchain_height() - 1;
+  uint64_t totalCoinsInNetwork = m_core.coinsEmittedAtHeight(height);
+  uint64_t totalCoinsOnDeposits = m_core.depositAmountAtHeight(height);
+  if(totalCoinsOnDeposits > totalCoinsInNetwork){
+	totalCoinsOnDeposits = totalCoinsInNetwork - (totalCoinsOnDeposits - totalCoinsInNetwork ) - (totalCoinsInNetwork * 0.0375 );
+  }
+  res.full_deposit_amount = totalCoinsOnDeposits;
   res.full_deposit_interest = m_core.fullDepositInterest();
   res.status = CORE_RPC_STATUS_OK;
   return true;
