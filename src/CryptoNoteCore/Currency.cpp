@@ -152,9 +152,9 @@ bool Currency::getBlockReward(size_t medianSize, size_t currentBlockSize, uint64
 
   uint64_t penalizedBaseReward = getPenalizedAmount(baseReward, medianSize, currentBlockSize);
 
-  emissionChange = penalizedBaseReward;
-  reward = penalizedBaseReward + fee;
-
+  emissionChange = height < 2 ? penalizedBaseReward : (std::min)(penalizedBaseReward, MAX_BLOCK_REWARD);
+  reward = height < 2 ? (penalizedBaseReward + fee) : (std::min)((penalizedBaseReward + fee), MAX_BLOCK_REWARD);
+  
   return true;
 }
 

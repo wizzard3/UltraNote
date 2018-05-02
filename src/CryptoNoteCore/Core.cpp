@@ -383,6 +383,30 @@ bool core::get_block_template(Block& b, const AccountPublicAddress& adr, difficu
     logger(ERROR, BRIGHT_RED) << "Failed to construct miner tx, first chance"; 
     return false; 
   }
+  
+  //10 attemtps to get valid base transaction
+  bool minerTxValid = false;
+  for(size_t i=0;i<10;i++){
+	  uint64_t checkReward = 0;
+	  for (auto& o : b.baseTransaction.outputs) {
+		checkReward += o.amount;
+	  }
+	  uint64_t block_reward;
+	  int64_t emission_change;
+	  m_currency.getBlockReward(median_size, txs_size, already_generated_coins, fee, height, block_reward, emission_change);
+	  if ((block_reward + fee < checkReward) || (checkReward < block_reward)) {
+		logger(ERROR, BRIGHT_RED) << "Coinbase transaction would fit reward amount, attemting to construnct a new one -> " << m_currency.formatAmount(checkReward) <<
+		  " != " << m_currency.formatAmount(block_reward);
+		minerTxValid = false;
+		bool r = m_currency.constructMinerTx(height, median_size, already_generated_coins, txs_size, fee, adr, b.baseTransaction, ex_nonce, 11);
+		if(!r) return false; 
+	  } 
+	  else {
+		minerTxValid = true;
+		break;
+	  }
+	  
+  }
 
   size_t cumulative_size = txs_size + getObjectBinarySize(b.baseTransaction);
   for (size_t try_count = 0; try_count != 10; ++try_count) {
