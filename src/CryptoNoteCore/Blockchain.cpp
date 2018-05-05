@@ -660,14 +660,14 @@ bool Blockchain::getBlockHeight(const Crypto::Hash& blockId, uint32_t& blockHeig
 uint8_t Blockchain::getForkVersion(){
     uint32_t height = getCurrentBlockchainHeight();
      
-    std::map<const uint32_t, const uint8_t> versionMap;
+    const std::map<const uint32_t, const uint8_t>* versionMap;
     if(m_currency.isTestnet())
-      versionMap = TestNetVersion;
+      versionMap = &TestNetVersion;
     else
-      versionMap = Version;
+      versionMap = &Version;
     
     uint8_t lastForkVersion = 0;
-    for(auto const& it : versionMap) {
+    for(auto const& it : *versionMap) {
         //lastForkHeight = it.first;
         //lastForkVersion = it.second;
         
