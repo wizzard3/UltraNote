@@ -320,7 +320,11 @@ void Dispatcher::yield() {
           pushContext(contextPair->writeContext->context);
           contextPair->writeContext->events = events[i].events;
         } else if ((events[i].events & EPOLLIN) != 0) {
-          contextPair->readContext->context->interruptProcedure = nullptr;
+          if(contextPair->readContext != nullptr) {
+           if(contextPair->readContext->context != nullptr) {
+              contextPair->readContext->context->interruptProcedure = nullptr;
+            }
+          }
           pushContext(contextPair->readContext->context);
           contextPair->readContext->events = events[i].events;
         } else {
