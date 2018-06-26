@@ -891,7 +891,10 @@ difficulty_type Blockchain::get_next_difficulty_for_alternative_chain(const std:
     timestamps.resize(std::min(alt_chain.size(), difficiltyBlocksCount));
     commulative_difficulties.resize(std::min(alt_chain.size(), difficiltyBlocksCount));
     size_t count = 0;
-    size_t max_i = timestamps.size() - 1;
+    if (timestamps.size() < 1) {
+      logger(ERROR, BRIGHT_RED) << "Internal error, timestamps.size() < 1"; return false;
+    }
+    int max_i = timestamps.size() - 1;
     BOOST_REVERSE_FOREACH(auto it, alt_chain) {
       timestamps[max_i - count] = it->second.bl.timestamp;
       commulative_difficulties[max_i - count] = it->second.cumulative_difficulty;
