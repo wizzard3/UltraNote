@@ -144,6 +144,8 @@ const std::initializer_list<const char*> SEED_NODES = {
    "seed2.ultranote.org:30000",
    "seed3.ultranote.org:30000",
    "seed4.ultranote.org:30000",
+   "seed5.ultranote.org:30000",
+   "seed6.ultranote.org:30000",
 };
 
 struct CheckpointData {
@@ -194,6 +196,7 @@ const std::initializer_list<CheckpointData> CHECKPOINTS = {
  { 114770, "39dc9a5466741a8a04782059926b3d9b2c11c784c4f5b8bb90085bb56724e1d4" },
  { 115000, "2e3686d4371be0e80b55f860ab506dc3172117a41a63fd9ad4787153937b0d69" },
  { 115001, "274ab9f4167c8a67808cc2ce0d916db4c7700196ccc404799d41d4545043a9b9" },
+ { 153702, "5eb63d86e6afa2910b7b6ebb66e947031979af30b333a87b6737eaff45c0db1a" },
  //
  
 };
