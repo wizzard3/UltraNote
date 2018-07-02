@@ -6,6 +6,8 @@
 #include <zedwallet/Tools.h>
 ////////////////////////////
 
+#include <cctype>
+
 #include <cmath>
 
 #include <Common/StringTools.h>
@@ -32,7 +34,7 @@ bool saveWallet(std::shared_ptr<WalletInfo> &walletInfo)
         walletInfo->wallet.save(tempFile);
         tempFile.flush();
     }
-    catch (const std::exception &e)
+    catch (const std::exception &)
     {
         tempFile.close();
 
@@ -140,7 +142,8 @@ std::string formatAmount(uint64_t amount)
 {
     /* Get the amount we need to divide to convert from atomic to pretty
        print, e.g. 100 for 2 decimal places */
-    const uint64_t divisor = pow(10, WalletConfig::numDecimalPlaces);
+    const uint64_t divisor
+		= static_cast<uint64_t>(pow(10, WalletConfig::numDecimalPlaces));
 
     const uint64_t dollars = amount / divisor;
     const uint64_t cents = amount % divisor;
@@ -153,7 +156,8 @@ std::string formatAmountBasic(uint64_t amount)
 {
     /* Get the amount we need to divide to convert from atomic to pretty
        print, e.g. 100 for 2 decimal places */
-    const uint64_t divisor = pow(10, WalletConfig::numDecimalPlaces);
+    const uint64_t divisor
+		= static_cast<uint64_t>(pow(10, WalletConfig::numDecimalPlaces));
 
     const uint64_t dollars = amount / divisor;
     const uint64_t cents = amount % divisor;

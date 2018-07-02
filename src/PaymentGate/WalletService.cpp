@@ -153,7 +153,7 @@ void addPaymentIdToExtra(const std::string& paymentId, std::string& extra) {
   std::copy(extraVector.begin(), extraVector.end(), std::back_inserter(extra));
 }
 
-void addTTLToExtra(const u_int64_t& ttl, std::string& extra) {
+void addTTLToExtra(const uint64_t& ttl, std::string& extra) {
   std::vector<uint8_t> extraVector;
   CryptoNote::appendTTLToExtra(extraVector, ttl);
   std::copy(extraVector.begin(), extraVector.end(), std::back_inserter(extra));
