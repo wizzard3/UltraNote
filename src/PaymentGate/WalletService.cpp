@@ -364,7 +364,7 @@ void saveWallet(CryptoNote::IWallet& wallet, std::fstream& walletFile, bool save
   walletFile.flush();
 }
 
-void secureSaveWallet(CryptoNote::IWallet& wallet, const std::string& path, bool saveDetailed = true, bool saveCache = true) {
+void secureSaveWallet(CryptoNote::IWallet& wallet, const std::string& path, bool saveDetailed, bool saveCache) {
   std::fstream tempFile;
   std::string tempFilePath = createTemporaryFile(path, tempFile);
 
