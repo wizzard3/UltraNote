@@ -13,6 +13,7 @@
 #include "CryptoNoteConfig.h"
 
 #include <CryptoNoteCore/CryptoNoteBasicImpl.h>
+#include <CryptoNoteCore/CryptoNoteBasicImpl.h>
 #include <CryptoNoteCore/TransactionExtra.h>
 
 #include <iostream>
@@ -459,7 +460,9 @@ void doTransfer(std::string address, uint64_t amount, uint64_t fee,
                 case WalletErrors::CryptoNote::error::WRONG_AMOUNT:
                 {
                     wrongAmount = true;
-                    [[fallthrough]];
+		    #if __has_cpp_attribute(fallthrough)
+		    [[fallthrough]];
+		    #endif
                 }
                 case WalletErrors::CryptoNote::error::MIXIN_COUNT_TOO_BIG:
                 case NodeErrors::CryptoNote::error::INTERNAL_NODE_ERROR:
