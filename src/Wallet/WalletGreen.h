@@ -81,12 +81,21 @@ public:
   virtual bool isFusionTransaction(size_t transactionId) const override;
   virtual IFusionManager::EstimateResult estimate(uint64_t threshold) const override;
 
+  void updateInternalCache();
+  size_t getMaxTxSize();
+  bool txIsTooLarge(const TransactionParameters& sendingTransaction);
+  void clearCaches();
+  size_t getTxSize(const TransactionParameters &sendingTransaction);
+  void clearCacheAndShutdown();
+  void createViewWallet(const std::string &password,
+                        const std::string address,
+                        const Crypto::SecretKey &viewSecretKey);
+
 protected:
   void throwIfNotInitialized() const;
   void throwIfStopped() const;
   void throwIfTrackingMode() const;
   void doShutdown();
-  void clearCaches();
   void initWithKeys(const Crypto::PublicKey& viewPublicKey, const Crypto::SecretKey& viewSecretKey, const std::string& password);
   std::string doCreateAddress(const Crypto::PublicKey& spendPublicKey, const Crypto::SecretKey& spendSecretKey, uint64_t creationTimestamp);
 
@@ -272,6 +281,7 @@ protected:
   std::vector<size_t> deleteTransfersForAddress(const std::string& address, std::vector<size_t>& deletedTransactions);
   void deleteFromUncommitedTransactions(const std::vector<size_t>& deletedTransactions);
 
+
   System::Dispatcher& m_dispatcher;
   const Currency& m_currency;
   INode& m_node;
@@ -302,7 +312,6 @@ protected:
   uint64_t m_actualBalance;
   uint64_t m_pendingBalance;
 
-  uint64_t m_upperTransactionSizeLimit;
   uint32_t m_transactionSoftLockTime;
 
   BlockHashesContainer m_blockchain;
