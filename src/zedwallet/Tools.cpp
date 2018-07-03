@@ -97,10 +97,9 @@ std::string createTemporaryFile(const std::string& path, std::fstream& tempFile)
 bool loadWallet(CryptoNote::WalletGreen &wallet, std::string walletFileName,
                 std::string walletPass)
 {
-    std::fstream walletFile;
-
-    /* Open the wallet file as a stream */
-    walletFile.open(walletFileName);
+    std::ifstream walletFile;
+    
+    walletFile.open(walletFileName, std::fstream::in | std::fstream::binary);
 
     if (!walletFile)
     {
@@ -112,10 +111,10 @@ bool loadWallet(CryptoNote::WalletGreen &wallet, std::string walletFileName,
 
     /* Load from the wallet file with the given pass */
     wallet.load(walletFile, walletPass);
-
-    /* Close the wallet file stream */
-    walletFile.close();
-
+	
+    /* Note that we're *not* closing the file stream - it seems walletgreen
+       handles this for us. You will experience crashes on windows if you 
+       close the stream. */
     return true;
 }
 
