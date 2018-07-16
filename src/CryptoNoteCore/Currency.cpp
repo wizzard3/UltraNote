@@ -700,9 +700,9 @@ difficulty_type Currency::nextDifficulty3(std::vector<uint64_t> timestamps,
 // See commented version below for required config file changes.
 // Make sure timestamps and cumulativeDifficulties vectors are sized N+1
 // and most recent element (Nth one) is most recently solved block.
-    
+
 // difficulty_type should be uint64_t
-difficulty_type nextDifficulty(std::vector<uint64_t> timestamps,
+difficulty_type Currency::nextDifficulty(std::vector<uint64_t> timestamps,
     std::vector<difficulty_type> cumulative_difficulties) {
     
     int64_t  T = static_cast<int64_t>(m_difficultyTarget);
