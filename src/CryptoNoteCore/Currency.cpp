@@ -703,7 +703,7 @@ difficulty_type Currency::nextDifficulty3(std::vector<uint64_t> timestamps,
 
 // difficulty_type should be uint64_t
 difficulty_type Currency::nextDifficulty(std::vector<uint64_t> timestamps,
-    std::vector<difficulty_type> cumulative_difficulties) {
+    std::vector<difficulty_type> cumulative_difficulties) const {
     
     int64_t  T = static_cast<int64_t>(m_difficultyTarget);
     int64_t  N = static_cast<int64_t>(parameters::DIFFICULTY_WINDOW_V3) -1; // N=45, 60, and 90 for T=600, 120, 60.
