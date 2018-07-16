@@ -215,12 +215,14 @@ const std::initializer_list<CheckpointData> CHECKPOINTS = {
 const std::map<const uint32_t, const uint8_t> Version = {
     {34147, 1},
     {115000, 2},
+    {170000, 3},
 };
 
 // {BlockIndex , Version}
 const std::map<const uint32_t, const uint8_t> TestNetVersion = {
     {120, 1},
     {250, 2},
+    {700, 3},
 };
 
 // {BlockIndex , Hash}

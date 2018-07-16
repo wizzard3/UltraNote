@@ -628,13 +628,13 @@ difficulty_type Currency::nextDifficulty2(std::vector<uint64_t> timestamps,
   return nextDiff;
 }
 
-//@nesterow: latest diff algo, zawy's LWMA
+//@nesterow: Third diff algo, zawy's LWMA
 
 // LWMA difficulty algorithm
 // Copyright (c) 2017-2018 Zawy
 // https://github.com/zawy12/difficulty-algorithms/issues/3
 // https://github.com/zawy12/difficulty-algorithms/issues/3#issuecomment-375600752
-difficulty_type Currency::nextDifficulty(std::vector<uint64_t> timestamps,
+difficulty_type Currency::nextDifficulty3(std::vector<uint64_t> timestamps,
   std::vector<difficulty_type> cumulativeDifficulties) const {
   
   const int64_t T = static_cast<int64_t>(m_difficultyTarget);
@@ -694,7 +694,37 @@ difficulty_type Currency::nextDifficulty(std::vector<uint64_t> timestamps,
   
 }
 
-
+// LWMA-2 difficulty algorithm
+// Copyright (c) 2017-2018 Zawy, MIT License
+// https://github.com/zawy12/difficulty-algorithms/issues/3
+// See commented version below for required config file changes.
+// Make sure timestamps and cumulativeDifficulties vectors are sized N+1
+// and most recent element (Nth one) is most recently solved block.
+    
+// difficulty_type should be uint64_t
+difficulty_type next_difficulty_v3(std::vector<uint64_t> timestamps,
+    std::vector<difficulty_type> cumulative_difficulties) {
+    
+    int64_t  T = static_cast<int64_t>(m_difficultyTarget);
+    int64_t  N = static_cast<int64_t>(parameters::DIFFICULTY_WINDOW_V2) -1; // N=45, 60, and 90 for T=600, 120, 60.
+    int64_t  FTL = static_cast<int64_t>(parameters::CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT_V2); // FTL=3xT
+    int64_t  L(0), ST, sum_3_ST(0), next_D, prev_D, j=0;
+    
+    for ( int64_t i = 1; i <= N; i++) {
+        ST = std::max(-FTL, std::min( static_cast<int64_t>(timestamps[i]) - static_cast<int64_t>(timestamps[i-1]), 6*T));
+        L +=  ST * i ;
+        if ( i > N-3 ) { sum_3_ST += ST; }
+    }
+    next_D = (static_cast<int64_t>(cumulative_difficulties[N] - cumulative_difficulties[0])*T*(N+1)*99)/(100*2*L);
+        
+    // implement LWMA-2 changes from LWMA
+    prev_D = cumulative_difficulties[N] - cumulative_difficulties[N-1];
+    // If N !=60 adjust 3 integers: 67*N/60, 150*60/N, 110*60/N
+    next_D = std::max((prev_D*67)/100, std::min( next_D, (prev_D*150)/100));
+    if ( sum_3_ST < (8*T)/10) {  next_D = std::max(next_D,(prev_D*110)/100); }
+    
+    return static_cast<uint64_t>(next_D);
+}
 
 bool Currency::checkProofOfWork(Crypto::cn_context& context, const Block& block, difficulty_type currentDiffic,
   Crypto::Hash& proofOfWork) const {

@@ -135,7 +135,8 @@ public:
   
   difficulty_type nextDifficulty1(std::vector<uint64_t> timestamps, std::vector<difficulty_type> cumulativeDifficulties) const;
   difficulty_type nextDifficulty2(std::vector<uint64_t> timestamps, std::vector<difficulty_type> cumulativeDifficulties) const;
-  difficulty_type nextDifficulty(std::vector<uint64_t> timestamps, std::vector<difficulty_type> cumulativeDifficulties) const;
+  difficulty_type nextDifficulty3(std::vector<uint64_t> timestamps, std::vector<difficulty_type> cumulativeDifficulties) const;
+  difficulty_type next_difficulty(std::vector<std::uint64_t> timestamps, std::vector<difficulty_type> cumulative_difficulties);
   bool checkProofOfWork(Crypto::cn_context& context, const Block& block, difficulty_type currentDiffic, Crypto::Hash& proofOfWork) const;
 
   size_t getApproximateMaximumInputCount(size_t transactionSize, size_t outputCount, size_t mixinCount) const;

@@ -715,7 +715,11 @@ difficulty_type Blockchain::getDifficultyForNextBlock() {
     logger(DEBUGGING) << "Using Sumokoin  difficulty algo (v2)";
     return m_currency.nextDifficulty2(timestamps, commulative_difficulties);
   }
-  logger(DEBUGGING) << "Using zawy's LWMA difficulty algo (latest)";
+  else if(version == 2){
+    logger(DEBUGGING) << "Using zawy's LWMA difficulty algo (v3)";
+    return m_currency.nextDifficulty3(timestamps, commulative_difficulties);
+  }
+  logger(DEBUGGING) << "Using zawy's LWMA-2 difficulty algo (latest)";
   return m_currency.nextDifficulty(timestamps, commulative_difficulties);
 }
 
@@ -911,7 +915,9 @@ difficulty_type Blockchain::get_next_difficulty_for_alternative_chain(const std:
   else if(version == 1){
     return m_currency.nextDifficulty2(timestamps, commulative_difficulties);
   }
-  
+  else if(version == 2){
+    return m_currency.nextDifficulty3(timestamps, commulative_difficulties);
+  }
   return m_currency.nextDifficulty(timestamps, commulative_difficulties);
 }
 
