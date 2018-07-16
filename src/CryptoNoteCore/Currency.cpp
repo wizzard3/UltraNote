@@ -702,12 +702,12 @@ difficulty_type Currency::nextDifficulty3(std::vector<uint64_t> timestamps,
 // and most recent element (Nth one) is most recently solved block.
     
 // difficulty_type should be uint64_t
-difficulty_type next_difficulty_v3(std::vector<uint64_t> timestamps,
+difficulty_type nextDifficulty(std::vector<uint64_t> timestamps,
     std::vector<difficulty_type> cumulative_difficulties) {
     
     int64_t  T = static_cast<int64_t>(m_difficultyTarget);
-    int64_t  N = static_cast<int64_t>(parameters::DIFFICULTY_WINDOW_V2) -1; // N=45, 60, and 90 for T=600, 120, 60.
-    int64_t  FTL = static_cast<int64_t>(parameters::CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT_V2); // FTL=3xT
+    int64_t  N = static_cast<int64_t>(parameters::DIFFICULTY_WINDOW_V3) -1; // N=45, 60, and 90 for T=600, 120, 60.
+    int64_t  FTL = static_cast<int64_t>(parameters::CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT_V3); // FTL=3xT
     int64_t  L(0), ST, sum_3_ST(0), next_D, prev_D, j=0;
     
     for ( int64_t i = 1; i <= N; i++) {
